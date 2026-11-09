@@ -7,6 +7,7 @@ import PaperItem from '../components/PaperItem.astro';
 import Ledger from '../components/Ledger.astro';
 import PostItem from '../components/PostItem.astro';
 import Contact from '../components/Contact.astro';
+import SpaceDivider from '../components/SpaceDivider.astro';
 import { categories, featured, projects } from '../data/projects';
 import { experience } from '../data/experience';
 import { papers } from '../data/papers';
@@ -39,6 +40,8 @@ const roles = experience.filter((r) => r.home);
     </div>
   </section>
 
+  <SpaceDivider kind="rocket" />
+
   <!-- experience -->
   <section class="sec">
     <div class="wrap reveal">
@@ -53,6 +56,8 @@ const roles = experience.filter((r) => r.home);
       </ol>
     </div>
   </section>
+
+  <SpaceDivider kind="satellite" flip />
 
   <!-- selected work -->
   <section class="sec">
@@ -79,6 +84,8 @@ const roles = experience.filter((r) => r.home);
     </div>
   </section>
 
+  <SpaceDivider kind="comet" />
+
   <!-- research -->
   <section class="sec">
     <div class="wrap reveal">
@@ -89,6 +96,8 @@ const roles = experience.filter((r) => r.home);
     </div>
   </section>
 
+  <SpaceDivider kind="rocket" flip />
+
   <!-- honours -->
   <section class="sec">
     <div class="wrap reveal">
@@ -96,6 +105,8 @@ const roles = experience.filter((r) => r.home);
       <Ledger items={honours.map((h) => ({ name: h.name, result: h.result, sub: h.short }))} />
     </div>
   </section>
+
+  <SpaceDivider kind="satellite" />
 
   <!-- writing -->
   <section class="sec">
@@ -106,6 +117,8 @@ const roles = experience.filter((r) => r.home);
       </div>
     </div>
   </section>
+
+  <SpaceDivider kind="comet" flip />
 
   <Contact reveal />
 </BaseLayout>

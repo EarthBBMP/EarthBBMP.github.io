@@ -1,13 +1,12 @@
-// home hero: stars + draggable globe (colours come from CSS variables)
+// home hero: draggable globe (colours come from CSS variables)
 import { geoDistance, geoGraticule10, geoOrthographic, geoPath } from 'd3-geo';
 import { feature, mesh } from 'topojson-client';
 import world from 'world-atlas/countries-110m.json';
 
 (() => {
   const hero = document.querySelector('.hero');
-  const starCanvas = hero?.querySelector('.sky-stars');
   const globeCanvas = hero?.querySelector('.globe');
-  if (!hero || !starCanvas) return;
+  if (!hero || !globeCanvas) return;
 
   const reduce = matchMedia('(prefers-reduced-motion: reduce)');
   const TAU = Math.PI * 2;
@@ -18,7 +17,6 @@ import world from 'world-atlas/countries-110m.json';
     const cs = getComputedStyle(document.documentElement);
     const v = (n) => cs.getPropertyValue(n).trim();
     colors = {
-      star: v('--star'), starAlpha: parseFloat(v('--star-alpha')) || 0.8,
       ocean: v('--globe-ocean'), oceanHi: v('--globe-ocean-hi'),
       land: v('--globe-land'), line: v('--globe-line'), grid: v('--globe-grid'),
       rim: v('--globe-rim'), glow: v('--globe-glow'), shade: v('--globe-shade'),
@@ -26,71 +24,17 @@ import world from 'world-atlas/countries-110m.json';
     };
   }
 
-  /* ---------- stars ---------- */
-  const sctx = starCanvas.getContext('2d');
-  let stars = [];
-  let sw = 0, sh = 0;
-
-  // seeded so stars stay put on resize
-  function rng(seed) {
-    return () => {
-      seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
-      let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
-  }
-
-  function sizeStars() {
-    const r = starCanvas.getBoundingClientRect();
-    sw = r.width; sh = r.height;
-    starCanvas.width = Math.round(sw * dpr);
-    starCanvas.height = Math.round(sh * dpr);
-    sctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const rand = rng(1584);
-    const n = Math.round((sw * sh) / 6500);
-    stars = Array.from({ length: n }, () => {
-      const big = rand() < 0.06;
-      return {
-        x: rand(), y: rand(),
-        r: big ? 1.05 + rand() * 0.7 : 0.35 + rand() * 0.65,
-        a: 0.3 + rand() * 0.7,
-        tw: rand() < 0.35 ? 0.5 + rand() * 1.5 : 0,
-        ph: rand() * TAU,
-      };
-    });
-  }
-
-  function drawStars(t) {
-    sctx.clearRect(0, 0, sw, sh);
-    sctx.fillStyle = `rgb(${colors.star})`;
-    for (const s of stars) {
-      let a = s.a * colors.starAlpha;
-      if (s.tw && !reduce.matches) a *= 0.55 + 0.45 * Math.sin((t / 1000) * s.tw + s.ph);
-      sctx.globalAlpha = Math.max(0, a);
-      sctx.beginPath();
-      sctx.arc(s.x * sw, s.y * sh, s.r, 0, TAU);
-      sctx.fill();
-    }
-    sctx.globalAlpha = 1;
-  }
-
   /* ---------- globe ---------- */
-  const geoReady = !!globeCanvas;
   const BKK = [100.5018, 13.7563];
   const rot = { lam: -122, phi: -14, gam: -9 }; // start over Southeast Asia
   const TILT = -14 * Math.PI / 180;
-  let gctx, proj, path, land, borders, graticule;
+  const land = feature(world, world.objects.land);
+  const borders = mesh(world, world.objects.countries, (a, b) => a !== b);
+  const graticule = geoGraticule10();
+  const gctx = globeCanvas.getContext('2d');
+  const proj = geoOrthographic().clipAngle(90).precision(0.5);
+  const path = geoPath(proj, gctx);
   let gw = 0, cx = 0, cy = 0, R = 0;
-
-  if (geoReady) {
-    land = feature(world, world.objects.land);
-    borders = mesh(world, world.objects.countries, (a, b) => a !== b);
-    graticule = geoGraticule10();
-    gctx = globeCanvas.getContext('2d');
-    proj = geoOrthographic().clipAngle(90).precision(0.5);
-    path = geoPath(proj, gctx);
-  }
 
   function sizeGlobe() {
     const r = globeCanvas.getBoundingClientRect();
@@ -196,8 +140,7 @@ import world from 'world-atlas/countries-110m.json';
   const SPIN = 2.4; // degrees per second
 
   function paint(t) {
-    drawStars(t);
-    if (geoReady) drawGlobe(t);
+    drawGlobe(t);
   }
 
   function frame(t) {
@@ -217,13 +160,12 @@ import world from 'world-atlas/countries-110m.json';
 
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
-    sizeStars();
-    if (geoReady) sizeGlobe();
+    sizeGlobe();
     paint(performance.now());
   }
 
   /* ---------- drag to spin ---------- */
-  if (geoReady) {
+  {
     let px = 0, py = 0;
     globeCanvas.addEventListener('pointerdown', (e) => {
       dragging = true; px = e.clientX; py = e.clientY;

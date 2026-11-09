@@ -1,0 +1,126 @@
+---
+// section divider: a rocket, comet or satellite at the end of its trail
+interface Props {
+  kind: 'rocket' | 'comet' | 'satellite';
+  flip?: boolean;
+}
+
+const { kind, flip = false } = Astro.props;
+const uid = `${kind}-${flip ? 'l' : 'r'}`;
+
+// trail: cubic curve rising towards the craft
+const P = [[30, 98], [300, 104], [600, 58], [900, 34]];
+const at = (t: number) => {
+  const u = 1 - t;
+  const c = [u * u * u, 3 * u * u * t, 3 * u * t * t, t * t * t];
+  return [0, 1].map((i) => c.reduce((sum, k, j) => sum + k * P[j][i], 0));
+};
+const d = `M${P[0]} C${P[1]} ${P[2]} ${P[3]}`;
+const angle = (Math.atan2(P[3][1] - P[2][1], P[3][0] - P[2][0]) * 180) / Math.PI;
+
+// smoke puffs: small near the rocket, bigger and fainter further back
+const puffs = [0.97, 0.94, 0.9, 0.86, 0.81, 0.76, 0.7, 0.64, 0.57, 0.5, 0.43, 0.36, 0.3].flatMap((t, i) => {
+  const [x, y] = at(t);
+  const r = 3 + (1 - t) * 17;
+  const o = 0.5 * t * t;
+  const delay = (t * 1.3).toFixed(2);
+  return [
+    { x, y: y + (i % 2 ? 1 : -1) * (1 - t) * 6, r, o, delay },
+    { x: x - r * 0.6, y: y + (i % 2 ? -1 : 1) * r * 0.35, r: r * 0.7, o: o * 0.8, delay },
+  ];
+});
+
+// comet tail sparkles
+const dust = [0.9, 0.8, 0.68, 0.55].map((t, i) => {
+  const [x, y] = at(t);
+  return { x, y: y + (i % 2 ? 6 : -6), r: 1.4 - i * 0.2 };
+});
+
+const sparkles = {
+  rocket: [[160, 40, 1], [470, 104, 0.7], [760, 92, 0.85]],
+  comet: [[120, 56, 0.8], [520, 30, 1], [790, 100, 0.7]],
+  satellite: [[200, 34, 0.75], [430, 96, 1], [700, 22, 0.8]],
+}[kind];
+---
+
+<div class:list={['flight', 'wrap', 'reveal', `flight-${kind}`, { flip }]} aria-hidden="true">
+  <svg viewBox="0 0 1000 130" preserveAspectRatio="xMaxYMid slice">
+    <defs>
+      <linearGradient id={`trail-${uid}`} gradientUnits="userSpaceOnUse" x1="30" y1="0" x2="900" y2="0">
+        <stop offset="0" style="stop-color: var(--trail); stop-opacity: 0"></stop>
+        <stop offset="1" style="stop-color: var(--trail)"></stop>
+      </linearGradient>
+      <filter id={`soft-${uid}`} x="-20%" y="-50%" width="140%" height="200%">
+        <feGaussianBlur stdDeviation="2.4"></feGaussianBlur>
+      </filter>
+      {kind === 'comet' && (
+        <radialGradient id={`glow-${uid}`}>
+          <stop offset="0" style="stop-color: var(--comet); stop-opacity: .55"></stop>
+          <stop offset="1" style="stop-color: var(--comet); stop-opacity: 0"></stop>
+        </radialGradient>
+      )}
+    </defs>
+
+    {sparkles.map(([x, y, s], i) => (
+      <g transform={`translate(${x} ${y}) scale(${s})`}>
+        <path class="spark" style={`--d:${i * 0.9}s`} d="M0 -6 L1.4 -1.4 L6 0 L1.4 1.4 L0 6 L-1.4 1.4 L-6 0 L-1.4 -1.4 Z"></path>
+      </g>
+    ))}
+
+    {kind === 'rocket' && (
+      <>
+        <path class="trail" d={d} pathLength="1" stroke={`url(#trail-${uid})`}></path>
+        <g filter={`url(#soft-${uid})`}>
+          {puffs.map((p) => (
+            <circle class="puff" cx={p.x.toFixed(1)} cy={p.y.toFixed(1)} r={p.r.toFixed(1)} style={`--o:${p.o.toFixed(2)};--delay:${p.delay}s`}></circle>
+          ))}
+        </g>
+        <g class="craft">
+          <g transform={`translate(${P[3][0]} ${P[3][1]}) rotate(${angle.toFixed(1)})`}>
+            <g class="bob">
+              <path class="flame" d="M2 0 L-18 -6 L-11 0 L-18 6 Z"></path>
+              <path class="flame-in" d="M2 0 L-10 -3 L-6 0 L-10 3 Z"></path>
+              <path class="fin" d="M10 -9 L-2 -21 L20 -9 Z"></path>
+              <path class="fin" d="M10 9 L-2 21 L20 9 Z"></path>
+              <path class="hull" d="M2 -9 H48 C60 -9 70 -4 76 0 C70 4 60 9 48 9 H2 Z"></path>
+              <circle class="window" cx="45" cy="0" r="5"></circle>
+            </g>
+          </g>
+        </g>
+      </>
+    )}
+
+    {kind === 'comet' && (
+      <>
+        <path class="trail tail-glow" d={d} pathLength="1" stroke={`url(#trail-${uid})`} filter={`url(#soft-${uid})`}></path>
+        <path class="trail tail" d={d} pathLength="1" stroke={`url(#trail-${uid})`}></path>
+        {dust.map((p) => <circle class="dust" cx={p.x.toFixed(1)} cy={p.y.toFixed(1)} r={p.r.toFixed(1)}></circle>)}
+        <g class="craft">
+          <g transform={`translate(${P[3][0]} ${P[3][1]})`}>
+            <circle class="comet-glow" r="22" fill={`url(#glow-${uid})`}></circle>
+            <circle class="comet-head" r="5"></circle>
+          </g>
+        </g>
+      </>
+    )}
+
+    {kind === 'satellite' && (
+      <>
+        <path class="orbit-line" d={d} stroke={`url(#trail-${uid})`}></path>
+        <g class="craft">
+          <g transform={`translate(${P[3][0]} ${P[3][1]}) rotate(${angle.toFixed(1)})`}>
+            <g class="sway">
+              <path class="signal" d="M44 -10 A14 14 0 0 1 44 10 M52 -16 A22 22 0 0 1 52 16"></path>
+              <rect class="panel" x="-36" y="-6" width="22" height="12" rx="1.5"></rect>
+              <rect class="panel" x="14" y="-6" width="22" height="12" rx="1.5"></rect>
+              <path class="panel-line" d="M-29 -6 V6 M-21 -6 V6 M21 -6 V6 M29 -6 V6 M-14 0 H-8 M8 0 H14"></path>
+              <rect class="hull" x="-8" y="-8" width="16" height="16" rx="3"></rect>
+              <path class="antenna" d="M0 -8 V-17"></path>
+              <circle class="window" cx="0" cy="-18" r="2.2"></circle>
+            </g>
+          </g>
+        </g>
+      </>
+    )}
+  </svg>
+</div>

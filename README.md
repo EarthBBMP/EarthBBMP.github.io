@@ -35,14 +35,15 @@ Personal website of **Suphachat Sriharan** (Earth), an engineering student at Ch
 │   └── workflows/deploy.yml   build and deploy on every push to main
 ├── public/                    served as-is: CV, images, favicon
 ├── src/
-│   ├── components/            Nav, Footer, Hero, ProjectEntry, PaperItem, ...
+│   ├── components/            Nav, Footer, Hero, SpaceDivider, ProjectEntry, ...
 │   ├── data/                  the content: projects, papers, experience, honours, posts
 │   ├── layouts/
 │   │   └── BaseLayout.astro   <head>, nav and footer shared by every page
 │   ├── pages/                 one file per route (index, work, research, writing, about, 404)
 │   ├── scripts/
 │   │   ├── main.js            theme toggle, nav, work filters
-│   │   └── sky.js             stars and globe on the home page
+│   │   ├── stars.js           starfield behind every page
+│   │   └── sky.js             globe on the home page
 │   └── styles/
 │       └── global.css         all styles, theme colours at the top
 ├── astro.config.mjs
