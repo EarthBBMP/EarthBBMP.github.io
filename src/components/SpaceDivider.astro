@@ -4,9 +4,10 @@ interface Props {
   kind: 'rocket' | 'comet' | 'satellite';
   seed: number;
   flip?: boolean;
+  climb?: number; // rocket nose-up angle in degrees
 }
 
-const { kind, seed, flip = false } = Astro.props;
+const { kind, seed, flip = false, climb } = Astro.props;
 const uid = `${kind}-${seed}`;
 // viewBox matches the text column; the trail starts far off the left edge
 const W = 1120;
@@ -29,6 +30,11 @@ const amp = { rocket: 42, comet: 26, satellite: 18 }[kind];
 const reach = { rocket: [980, 1040], satellite: [1000, 1050], comet: [1020, 1070] }[kind];
 const end: Pt = [R(reach[0], reach[1]), kind === 'rocket' ? R(40, 72) : R(44, 116)];
 const START = -800;
+
+// rockets end with a short climb so they never point down at the text
+const LIFT = 220;
+const rise = kind === 'rocket' ? Math.tan(((climb ?? R(8, 12)) * Math.PI) / 180) * LIFT : 0;
+if (kind === 'rocket') end[1] = Math.min(end[1], 130 - rise);
 const startY = R(30, 130);
 const n = 4 + Math.floor(rand() * 3);
 let pts: Pt[] = [];
@@ -39,10 +45,9 @@ for (let i = 0; i <= n; i++) {
   pts.push([x, y]);
 }
 
-// rockets climb into place so they never point down at the text
 if (kind === 'rocket') {
-  const prev = pts[n - 1];
-  prev[1] = clamp(end[1] + Math.tan((R(8, 12) * Math.PI) / 180) * (end[0] - prev[0]), 30, 134);
+  pts[n - 1][0] = Math.min(pts[n - 1][0], end[0] - LIFT - 120);
+  pts.splice(n, 0, [end[0] - LIFT, end[1] + rise]);
 }
 
 // smooth curve through the waypoints (Catmull-Rom as cubic Béziers)
@@ -131,7 +136,7 @@ const sparkles = Array.from({ length: 5 }, () => [R(20, W - 20), R(16, H - 16), 
           ))}
         </g>
         <g class="craft">
-          <g transform={`translate(${f1(end[0])} ${f1(end[1])}) rotate(${angle.toFixed(1)}) scale(.72)`}>
+          <g transform={`translate(${f1(end[0])} ${f1(end[1])}) rotate(${angle.toFixed(1)}) scale(.55)`}>
             <g class="bob">
               <path class="flame" d="M2 0 L-18 -6 L-11 0 L-18 6 Z"></path>
               <path class="flame-in" d="M2 0 L-10 -3 L-6 0 L-10 3 Z"></path>
