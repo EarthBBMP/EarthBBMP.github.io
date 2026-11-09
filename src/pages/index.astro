@@ -40,7 +40,7 @@ const roles = experience.filter((r) => r.home);
     </div>
   </section>
 
-  <SpaceDivider kind="rocket" />
+  <SpaceDivider kind="rocket" seed={1} />
 
   <!-- experience -->
   <section class="sec">
@@ -57,7 +57,7 @@ const roles = experience.filter((r) => r.home);
     </div>
   </section>
 
-  <SpaceDivider kind="satellite" flip />
+  <SpaceDivider kind="satellite" seed={2} flip />
 
   <!-- selected work -->
   <section class="sec">
@@ -84,7 +84,7 @@ const roles = experience.filter((r) => r.home);
     </div>
   </section>
 
-  <SpaceDivider kind="comet" />
+  <SpaceDivider kind="comet" seed={3} />
 
   <!-- research -->
   <section class="sec">
@@ -96,7 +96,7 @@ const roles = experience.filter((r) => r.home);
     </div>
   </section>
 
-  <SpaceDivider kind="rocket" flip />
+  <SpaceDivider kind="rocket" seed={4} flip loop />
 
   <!-- honours -->
   <section class="sec">
@@ -106,7 +106,7 @@ const roles = experience.filter((r) => r.home);
     </div>
   </section>
 
-  <SpaceDivider kind="satellite" />
+  <SpaceDivider kind="satellite" seed={5} />
 
   <!-- writing -->
   <section class="sec">
@@ -118,7 +118,7 @@ const roles = experience.filter((r) => r.home);
     </div>
   </section>
 
-  <SpaceDivider kind="comet" flip />
+  <SpaceDivider kind="comet" seed={6} flip />
 
   <Contact reveal />
 </BaseLayout>

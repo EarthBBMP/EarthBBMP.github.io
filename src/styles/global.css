@@ -25,6 +25,7 @@
   /* space dividers */
   --trail: rgba(150, 200, 255, .5);
   --smoke: 205 222 255;
+  --smoke-k: 1;
   --spark: 226 234 255;
   --craft-body: #E6ECF7;
   --craft-line: #8EA6CF;
@@ -90,7 +91,8 @@
   --hero-tint: rgba(239, 238, 232, .5);
   --hero-glow: rgba(29, 95, 175, .07);
   --trail: rgba(29, 95, 175, .45);
-  --smoke: 30 55 100;
+  --smoke: 70 100 150;
+  --smoke-k: .55;
   --spark: 29 95 175;
   --craft-body: #FFFFFF;
   --craft-line: #1D3A6B;
@@ -378,15 +380,15 @@ strong { font-weight: 600; }
 .sec { position: relative; padding-block: clamp(3.5rem, 7vw, 6rem); }
 
 /* space dividers (home) */
-.flight { position: relative; margin-block: calc(-1 * clamp(2rem, 4.5vw, 3.75rem)); pointer-events: none; }
-.flight svg { display: block; width: 100%; height: clamp(76px, 11vw, 130px); overflow: visible; }
+.flight { position: relative; margin-block: calc(-1 * clamp(2.25rem, 5vw, 4.5rem)); pointer-events: none; }
+.flight svg { display: block; width: 100%; height: clamp(90px, 12vw, 160px); overflow: visible; }
 .flight.flip svg { transform: scaleX(-1); }
 .flight .trail { fill: none; stroke-width: 1.4; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; transition: stroke-dashoffset 1.6s var(--ease); }
 .flight .tail { stroke-width: 4; }
 .flight .tail-glow { stroke-width: 16; opacity: .35; }
 .flight .orbit-line { fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-dasharray: 1 9; transition: opacity 1s ease .3s; }
 .flight .puff {
-  fill: rgb(var(--smoke) / var(--o));
+  fill: rgb(var(--smoke) / calc(var(--o) * var(--smoke-k)));
   transform-box: fill-box; transform-origin: center;
   transition: opacity .6s ease, transform .8s var(--ease); transition-delay: var(--delay);
 }

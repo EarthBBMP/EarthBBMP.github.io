@@ -1,57 +1,113 @@
 ---
-// section divider: a rocket, comet or satellite at the end of its trail
+// section divider: a rocket, comet or satellite at the end of a random trail
 interface Props {
   kind: 'rocket' | 'comet' | 'satellite';
+  seed: number;
   flip?: boolean;
+  loop?: boolean;
 }
 
-const { kind, flip = false } = Astro.props;
-const uid = `${kind}-${flip ? 'l' : 'r'}`;
+const { kind, seed, flip = false, loop = false } = Astro.props;
+const uid = `${kind}-${seed}`;
+const W = 1600;
+const H = 160;
 
-// trail: cubic curve rising towards the craft
-const P = [[30, 98], [300, 104], [600, 58], [900, 34]];
-const at = (t: number) => {
-  const u = 1 - t;
-  const c = [u * u * u, 3 * u * u * t, 3 * u * t * t, t * t * t];
-  return [0, 1].map((i) => c.reduce((sum, k, j) => sum + k * P[j][i], 0));
+// seeded random so the same divider looks the same on every build
+let s = seed * 9973 + kind.length * 131;
+const rand = () => {
+  s |= 0; s = (s + 0x6d2b79f5) | 0;
+  let t = Math.imul(s ^ (s >>> 15), 1 | s);
+  t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
 };
-const d = `M${P[0]} C${P[1]} ${P[2]} ${P[3]}`;
-const angle = (Math.atan2(P[3][1] - P[2][1], P[3][0] - P[2][0]) * 180) / Math.PI;
+const R = (a: number, b: number) => a + rand() * (b - a);
+const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+type Pt = [number, number];
 
-// smoke puffs: small near the rocket, bigger and fainter further back
-const puffs = [0.97, 0.94, 0.9, 0.86, 0.81, 0.76, 0.7, 0.64, 0.57, 0.5, 0.43, 0.36, 0.3].flatMap((t, i) => {
-  const [x, y] = at(t);
-  const r = 3 + (1 - t) * 17;
-  const o = 0.5 * t * t;
-  const delay = (t * 1.3).toFixed(2);
-  return [
-    { x, y: y + (i % 2 ? 1 : -1) * (1 - t) * 6, r, o, delay },
-    { x: x - r * 0.6, y: y + (i % 2 ? -1 : 1) * r * 0.35, r: r * 0.7, o: o * 0.8, delay },
-  ];
-});
+// waypoints from off-screen to the craft
+const amp = { rocket: 42, comet: 26, satellite: 18 }[kind];
+const end: Pt = [R(860, 1060), R(44, 116)]; // stays visible when phones crop the sides
+const startY = R(30, 130);
+const n = 4 + Math.floor(rand() * 3);
+let pts: Pt[] = [];
+for (let i = 0; i <= n; i++) {
+  const f = i / n;
+  const x = -80 + f * (end[0] + 80) + (i > 0 && i < n ? R(-40, 40) : 0);
+  const y = i === 0 ? startY : i === n ? end[1] : clamp(startY + (end[1] - startY) * f + R(-amp, amp), 30, 130);
+  pts.push([x, y]);
+}
 
-// comet tail sparkles
-const dust = [0.9, 0.8, 0.68, 0.55].map((t, i) => {
-  const [x, y] = at(t);
-  return { x, y: y + (i % 2 ? 6 : -6), r: 1.4 - i * 0.2 };
-});
+// optional loop-de-loop near the end
+if (loop) {
+  const k = n - 1;
+  const [x, y0] = pts[k];
+  const y = clamp(y0, 82, 130);
+  const r = 26;
+  pts = [...pts.slice(0, k), [x - r * 0.4, y], [x + r, y - r], [x, y - 2 * r], [x - r, y - r], [x + r * 0.4, y], ...pts.slice(k + 1)];
+}
 
-const sparkles = {
-  rocket: [[160, 40, 1], [470, 104, 0.7], [760, 92, 0.85]],
-  comet: [[120, 56, 0.8], [520, 30, 1], [790, 100, 0.7]],
-  satellite: [[200, 34, 0.75], [430, 96, 1], [700, 22, 0.8]],
-}[kind];
+// smooth curve through the waypoints (Catmull-Rom as cubic Béziers)
+const segs: [Pt, Pt, Pt, Pt][] = [];
+for (let i = 0; i < pts.length - 1; i++) {
+  const p0 = pts[i - 1] ?? pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] ?? p2;
+  const c1: Pt = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+  const c2: Pt = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+  segs.push([p1, c1, c2, p2]);
+}
+const f1 = (v: number) => v.toFixed(1);
+const d = `M${f1(pts[0][0])} ${f1(pts[0][1])}` + segs.map(([, c1, c2, p]) => ` C${f1(c1[0])} ${f1(c1[1])} ${f1(c2[0])} ${f1(c2[1])} ${f1(p[0])} ${f1(p[1])}`).join('');
+const last = segs[segs.length - 1];
+const angle = (Math.atan2(last[3][1] - last[2][1], last[3][0] - last[2][0]) * 180) / Math.PI;
+
+// sample the curve so things can be placed along it by distance
+const bez = ([a, b, c, e]: [Pt, Pt, Pt, Pt], t: number): Pt => {
+  const u = 1 - t;
+  return [0, 1].map((i) => u * u * u * a[i] + 3 * u * u * t * b[i] + 3 * u * t * t * c[i] + t * t * t * e[i]) as Pt;
+};
+const poly: { p: Pt; dist: number }[] = [];
+let total = 0;
+for (const seg of segs) {
+  for (let i = poly.length ? 1 : 0; i <= 40; i++) {
+    const p = bez(seg, i / 40);
+    if (poly.length) total += Math.hypot(p[0] - poly[poly.length - 1].p[0], p[1] - poly[poly.length - 1].p[1]);
+    poly.push({ p, dist: total });
+  }
+}
+const pointAt = (dist: number): Pt => poly.find((q) => q.dist >= dist)?.p ?? poly[poly.length - 1].p;
+
+// rocket smoke: dense small puffs near the rocket, bigger and fainter further back
+const puffs: { x: number; y: number; r: number; o: number; delay: number }[] = [];
+if (kind === 'rocket') {
+  let back = 6;
+  while (back < total) {
+    const f = back / total;
+    const [x, y] = pointAt(total - back);
+    const r = 2.5 + 15 * Math.pow(f, 0.7);
+    puffs.push({ x: x + R(-0.3, 0.3) * r, y: y + R(-0.35, 0.35) * r, r: r * R(0.8, 1.15), o: 0.05 + 0.5 * Math.pow(1 - f, 1.4), delay: 1.35 * (1 - f) });
+    back += 5 + 13 * f;
+  }
+}
+
+// comet dust
+const dust = kind === 'comet'
+  ? Array.from({ length: 7 }, (_, i) => {
+      const [x, y] = pointAt(total * (0.55 + i * 0.06));
+      return { x: x + R(-6, 6), y: y + R(-8, 8), r: R(0.8, 1.6) };
+    })
+  : [];
+
+const sparkles = Array.from({ length: 5 }, () => [R(40, W - 40), R(16, H - 16), R(0.55, 1.05)]);
 ---
 
-<div class:list={['flight', 'wrap', 'reveal', `flight-${kind}`, { flip }]} aria-hidden="true">
-  <svg viewBox="0 0 1000 130" preserveAspectRatio="xMaxYMid slice">
+<div class:list={['flight', 'reveal', `flight-${kind}`, { flip }]} aria-hidden="true">
+  <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice">
     <defs>
-      <linearGradient id={`trail-${uid}`} gradientUnits="userSpaceOnUse" x1="30" y1="0" x2="900" y2="0">
+      <linearGradient id={`trail-${uid}`} gradientUnits="userSpaceOnUse" x1="0" y1="0" x2={f1(end[0])} y2="0">
         <stop offset="0" style="stop-color: var(--trail); stop-opacity: 0"></stop>
         <stop offset="1" style="stop-color: var(--trail)"></stop>
       </linearGradient>
-      <filter id={`soft-${uid}`} x="-20%" y="-50%" width="140%" height="200%">
-        <feGaussianBlur stdDeviation="2.4"></feGaussianBlur>
+      <filter id={`soft-${uid}`} x="-10%" y="-60%" width="120%" height="220%">
+        <feGaussianBlur stdDeviation="2.6"></feGaussianBlur>
       </filter>
       {kind === 'comet' && (
         <radialGradient id={`glow-${uid}`}>
@@ -61,22 +117,21 @@ const sparkles = {
       )}
     </defs>
 
-    {sparkles.map(([x, y, s], i) => (
-      <g transform={`translate(${x} ${y}) scale(${s})`}>
-        <path class="spark" style={`--d:${i * 0.9}s`} d="M0 -6 L1.4 -1.4 L6 0 L1.4 1.4 L0 6 L-1.4 1.4 L-6 0 L-1.4 -1.4 Z"></path>
+    {sparkles.map(([x, y, sc], i) => (
+      <g transform={`translate(${f1(x)} ${f1(y)}) scale(${sc.toFixed(2)})`}>
+        <path class="spark" style={`--d:${(i * 0.7).toFixed(1)}s`} d="M0 -6 L1.4 -1.4 L6 0 L1.4 1.4 L0 6 L-1.4 1.4 L-6 0 L-1.4 -1.4 Z"></path>
       </g>
     ))}
 
     {kind === 'rocket' && (
       <>
-        <path class="trail" d={d} pathLength="1" stroke={`url(#trail-${uid})`}></path>
         <g filter={`url(#soft-${uid})`}>
           {puffs.map((p) => (
-            <circle class="puff" cx={p.x.toFixed(1)} cy={p.y.toFixed(1)} r={p.r.toFixed(1)} style={`--o:${p.o.toFixed(2)};--delay:${p.delay}s`}></circle>
+            <circle class="puff" cx={f1(p.x)} cy={f1(p.y)} r={f1(p.r)} style={`--o:${p.o.toFixed(2)};--delay:${p.delay.toFixed(2)}s`}></circle>
           ))}
         </g>
         <g class="craft">
-          <g transform={`translate(${P[3][0]} ${P[3][1]}) rotate(${angle.toFixed(1)})`}>
+          <g transform={`translate(${f1(end[0])} ${f1(end[1])}) rotate(${angle.toFixed(1)})`}>
             <g class="bob">
               <path class="flame" d="M2 0 L-18 -6 L-11 0 L-18 6 Z"></path>
               <path class="flame-in" d="M2 0 L-10 -3 L-6 0 L-10 3 Z"></path>
@@ -94,9 +149,9 @@ const sparkles = {
       <>
         <path class="trail tail-glow" d={d} pathLength="1" stroke={`url(#trail-${uid})`} filter={`url(#soft-${uid})`}></path>
         <path class="trail tail" d={d} pathLength="1" stroke={`url(#trail-${uid})`}></path>
-        {dust.map((p) => <circle class="dust" cx={p.x.toFixed(1)} cy={p.y.toFixed(1)} r={p.r.toFixed(1)}></circle>)}
+        {dust.map((p) => <circle class="dust" cx={f1(p.x)} cy={f1(p.y)} r={f1(p.r)}></circle>)}
         <g class="craft">
-          <g transform={`translate(${P[3][0]} ${P[3][1]})`}>
+          <g transform={`translate(${f1(end[0])} ${f1(end[1])})`}>
             <circle class="comet-glow" r="22" fill={`url(#glow-${uid})`}></circle>
             <circle class="comet-head" r="5"></circle>
           </g>
@@ -108,7 +163,7 @@ const sparkles = {
       <>
         <path class="orbit-line" d={d} stroke={`url(#trail-${uid})`}></path>
         <g class="craft">
-          <g transform={`translate(${P[3][0]} ${P[3][1]}) rotate(${angle.toFixed(1)})`}>
+          <g transform={`translate(${f1(end[0])} ${f1(end[1])}) rotate(${angle.toFixed(1)})`}>
             <g class="sway">
               <path class="signal" d="M44 -10 A14 14 0 0 1 44 10 M52 -16 A22 22 0 0 1 52 16"></path>
               <rect class="panel" x="-36" y="-6" width="22" height="12" rx="1.5"></rect>
