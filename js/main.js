@@ -2,6 +2,19 @@
 (() => {
   const root = document.documentElement;
 
+  /* GitHub Pages serves /work from work.html, so links leave off ".html".
+     Opened straight from disk (file://) that doesn't work, so put it back. */
+  if (location.protocol === 'file:') {
+    document.querySelectorAll('a[href]').forEach((a) => {
+      const h = a.getAttribute('href');
+      if (h === './') a.setAttribute('href', 'index.html');
+      else {
+        const m = h.match(/^(work|research|writing|about)(#.*)?$/);
+        if (m) a.setAttribute('href', `${m[1]}.html${m[2] || ''}`);
+      }
+    });
+  }
+
   /* ---------- theme ---------- */
   const toggle = document.querySelector('.theme-toggle');
   const metaTheme = document.querySelector('meta[name="theme-color"]');
