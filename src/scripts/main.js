@@ -2,18 +2,6 @@
 (() => {
   const root = document.documentElement;
 
-  // add .html back to links when running locally
-  if (location.protocol === 'file:' || ['localhost', '127.0.0.1'].includes(location.hostname)) {
-    document.querySelectorAll('a[href]').forEach((a) => {
-      const h = a.getAttribute('href');
-      if (h === './') a.setAttribute('href', 'index.html');
-      else {
-        const m = h.match(/^(work|research|writing|about)(#.*)?$/);
-        if (m) a.setAttribute('href', `${m[1]}.html${m[2] || ''}`);
-      }
-    });
-  }
-
   /* ---------- theme ---------- */
   const toggle = document.querySelector('.theme-toggle');
   const metaTheme = document.querySelector('meta[name="theme-color"]');

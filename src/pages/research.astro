@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PaperItem from '../components/PaperItem.astro';
+import SectionHead from '../components/SectionHead.astro';
+import { otherResearch, papers } from '../data/papers';
+---
+
+<BaseLayout
+  title="Research · Suphachat Sriharan"
+  description="Research by Suphachat Sriharan: temporal anchoring of LLMs on amended Thai law, and an audit of a sequence-to-expression genomics model. NeurIPS 2026 workshops."
+  current="research"
+>
+  <div class="wrap page-head">
+    <h1 class="page-title">Research<span class="dot">.</span></h1>
+    <p class="page-lede">Most of my research asks the same question: does the model actually know what it seems to know? So far that has meant LLMs answering questions about amended Thai law, and a genomics model that barely reads its own input.</p>
+  </div>
+
+  <div class="wrap">
+    <div class="papers">
+      {papers.map((p) => <PaperItem paper={p} full />)}
+    </div>
+
+    <section class="sec flush">
+      <SectionHead title="Other research work" />
+      <div class="others">
+        {otherResearch.map((o) => (
+          <a href={o.href}>
+            <span class="t">{o.title}</span>
+            <span class="m">{o.meta}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>

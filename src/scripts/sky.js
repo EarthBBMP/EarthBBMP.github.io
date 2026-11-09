@@ -1,4 +1,8 @@
 // home hero: stars + draggable globe (colours come from CSS variables)
+import { geoDistance, geoGraticule10, geoOrthographic, geoPath } from 'd3-geo';
+import { feature, mesh } from 'topojson-client';
+import world from 'world-atlas/countries-110m.json';
+
 (() => {
   const hero = document.querySelector('.hero');
   const starCanvas = hero?.querySelector('.sky-stars');
@@ -72,7 +76,7 @@
   }
 
   /* ---------- globe ---------- */
-  const geoReady = !!(globeCanvas && window.d3?.geoOrthographic && window.topojson && window.WORLD_110M);
+  const geoReady = !!globeCanvas;
   const BKK = [100.5018, 13.7563];
   const rot = { lam: -122, phi: -14, gam: -9 }; // start over Southeast Asia
   const TILT = -14 * Math.PI / 180;
@@ -80,13 +84,12 @@
   let gw = 0, cx = 0, cy = 0, R = 0;
 
   if (geoReady) {
-    const w = window.WORLD_110M;
-    land = topojson.feature(w, w.objects.land);
-    borders = topojson.mesh(w, w.objects.countries, (a, b) => a !== b);
-    graticule = d3.geoGraticule10();
+    land = feature(world, world.objects.land);
+    borders = mesh(world, world.objects.countries, (a, b) => a !== b);
+    graticule = geoGraticule10();
     gctx = globeCanvas.getContext('2d');
-    proj = d3.geoOrthographic().clipAngle(90).precision(0.5);
-    path = d3.geoPath(proj, gctx);
+    proj = geoOrthographic().clipAngle(90).precision(0.5);
+    path = geoPath(proj, gctx);
   }
 
   function sizeGlobe() {
@@ -170,7 +173,7 @@
     gctx.restore();
 
     // Bangkok marker
-    if (d3.geoDistance(BKK, [-rot.lam, -rot.phi]) < Math.PI / 2 - 0.1) {
+    if (geoDistance(BKK, [-rot.lam, -rot.phi]) < Math.PI / 2 - 0.1) {
       const [x, y] = proj(BKK);
       const k = reduce.matches ? 0.4 : ((t / 1000) % 2.4) / 2.4;
       gctx.save();

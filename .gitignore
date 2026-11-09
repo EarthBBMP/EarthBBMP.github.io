@@ -5,3 +5,8 @@ desktop.ini
 .vscode/
 .idea/
 *.swp
+
+# build
+node_modules/
+dist/
+.astro/

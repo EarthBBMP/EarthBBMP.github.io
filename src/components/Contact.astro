@@ -1,0 +1,18 @@
+---
+import { site } from '../data/site';
+
+interface Props {
+  reveal?: boolean;
+}
+
+const { reveal = false } = Astro.props;
+const [user, domain] = site.email.split('@');
+---
+
+<section class="contact">
+  <div class:list={['wrap', { reveal }]}>
+    <p class="eyebrow">Say hello</p>
+    <a class="contact-mail" href={`mailto:${site.email}`}>{user}<span class="at">@</span><wbr />{domain}</a>
+    <p class="contact-sub">Email is the quickest way to reach me. I'm also on <a class="link" href={site.links.linkedin} target="_blank" rel="noopener">LinkedIn</a>.</p>
+  </div>
+</section>

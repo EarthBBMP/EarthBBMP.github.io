@@ -1,0 +1,111 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import SectionHead from '../components/SectionHead.astro';
+import Icon from '../components/Icon.astro';
+import PaperItem from '../components/PaperItem.astro';
+import Ledger from '../components/Ledger.astro';
+import PostItem from '../components/PostItem.astro';
+import Contact from '../components/Contact.astro';
+import { categories, featured, projects } from '../data/projects';
+import { experience } from '../data/experience';
+import { papers } from '../data/papers';
+import { honours } from '../data/honours';
+import { posts } from '../data/posts';
+
+const highlights = featured.map((id) => projects.find((p) => p.id === id)!);
+const roles = experience.filter((r) => r.home);
+---
+
+<BaseLayout
+  title="Suphachat Sriharan · Robotics, AI and software"
+  description="Engineering student at Chulalongkorn University (ISE) building robots, AI systems, and software. Team lead at EIC-ARRT aerial robotics."
+  ogTitle="Suphachat Sriharan"
+  ogDescription="Keeping it down to Earth. Robots, AI systems, and software from Bangkok."
+>
+  <Hero />
+
+  <!-- about -->
+  <section class="sec">
+    <div class="wrap reveal">
+      <SectionHead title="About" href="/about" link="More about me" />
+      <div class="lead">
+        <p class="lead-big">Right now I lead <strong>EIC-ARRT</strong>, the aerial robotics team at Chula's Engineering Innovator Club, and I'm one of five engineers building a boiler inspection robot for <strong>Getabec</strong>.</p>
+        <div class="lead-cols">
+          <p>Before that I spent almost two years as a software developer at <strong>AIMET</strong>, shipping wellness center apps for Chula's medical students. On the research side, I have two papers accepted at <strong>NeurIPS 2026</strong> workshops, and our robot placed 6th in the world at RoboCup@Home 2026.</p>
+          <p>Day to day I work in Python and C++, with ROS 2, PX4 and Gazebo for robots, PyTorch for models, and React, Node.js and Go for the web.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- experience -->
+  <section class="sec">
+    <div class="wrap reveal">
+      <SectionHead title="Experience" href="/about#experience" link="Full background" />
+      <ol class="xp">
+        {roles.map((r) => (
+          <li>
+            <span class="when">{r.current && <span class="pulse" aria-hidden="true"></span>}{r.when}</span>
+            <div><p class="xp-org">{r.home!.org}</p><p class="xp-role">{r.home!.role}</p></div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- selected work -->
+  <section class="sec">
+    <div class="wrap reveal">
+      <SectionHead title="Selected work" href="/work" link="All work" />
+      <div class="showcase">
+        {highlights.map((p) => (
+          <a class="show" href={`/work#${p.id}`}>
+            <div class="show-head">
+              <p class="show-meta"><span class={`cat-${p.cat}`}>{categories[p.cat]}</span> · {p.highlight!.meta}</p>
+              <h3 class="show-title">{p.highlight!.title}</h3>
+              {p.highlight!.scribble && (
+                <p class="scribble"><svg class="scribble-arrow" viewBox="0 0 40 26" aria-hidden="true"><path d="M36 22c-9 1-19-2-26-12"></path><path d="M10 10l-.5 7.5M10 10l7 2"></path></svg>{p.highlight!.scribble}</p>
+              )}
+            </div>
+            <div class="show-body">
+              <p class="show-sum">{p.highlight!.summary}</p>
+              <p class="show-stack">{p.highlight!.stack}</p>
+              <span class="show-go">Read more <Icon name="arrow" /></span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- research -->
+  <section class="sec">
+    <div class="wrap reveal">
+      <SectionHead title="Research" href="/research" link="All research" />
+      <div class="papers duo">
+        {papers.map((p) => <PaperItem paper={p} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- honours -->
+  <section class="sec">
+    <div class="wrap reveal">
+      <SectionHead title="Honours" />
+      <Ledger items={honours.map((h) => ({ name: h.name, result: h.result, sub: h.short }))} />
+    </div>
+  </section>
+
+  <!-- writing -->
+  <section class="sec">
+    <div class="wrap reveal">
+      <SectionHead title="Writing" href="/writing" link="All posts" />
+      <div class="posts compact">
+        {posts.map((p) => <PostItem post={p} />)}
+      </div>
+    </div>
+  </section>
+
+  <Contact reveal />
+</BaseLayout>

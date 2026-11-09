@@ -1,0 +1,22 @@
+---
+import Icon from './Icon.astro';
+import type { Post } from '../data/posts';
+
+interface Props {
+  post: Post;
+  full?: boolean;
+}
+
+const { post: p, full = false } = Astro.props;
+const Title = full ? 'h2' : 'h3';
+---
+
+<a class="post" href={p.url} target="_blank" rel="noopener" lang={p.lang.code}>
+  {full && <img class="post-thumb" src={p.cover.src} alt="" width={p.cover.width} height={p.cover.height} loading="lazy" />}
+  <div>
+    <p class="post-meta"><span>{p.date}</span><span class="lang">{p.lang.label}</span>{p.publication && <span>{p.publication}</span>}</p>
+    <Title class="post-title">{p.title}</Title>
+    <p class="post-sum">{full ? p.intro : p.excerpt}</p>
+  </div>
+  <span class="post-go"><Icon name="external" /></span>
+</a>

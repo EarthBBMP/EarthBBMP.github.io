@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHead from '../components/SectionHead.astro';
+import CvRow from '../components/CvRow.astro';
+import Ledger from '../components/Ledger.astro';
+import Contact from '../components/Contact.astro';
+import Icon from '../components/Icon.astro';
+import { education, experience, skills } from '../data/experience';
+import { honours } from '../data/honours';
+import { site } from '../data/site';
+---
+
+<BaseLayout
+  title="About · Suphachat Sriharan"
+  description="Suphachat Sriharan: engineering student at Chulalongkorn University (ISE), team lead at EIC-ARRT, robotics engineer, and former software developer at AIMET."
+  ogType="profile"
+  current="about"
+>
+  <div class="wrap page-head">
+    <h1 class="page-title">About<span class="dot">.</span></h1>
+  </div>
+
+  <div class="wrap">
+    <div class="about-intro">
+      <div class="prose">
+        <p>I'm Suphachat, an engineering student at Chulalongkorn University's International School of Engineering (ISE) in Bangkok. I build robots, AI systems and software, and the goal is the same each time: technology that's useful to people.</p>
+        <p>Most of my time now goes to robotics. I lead <strong>EIC-ARRT</strong>, the aerial robotics team at Chula's Engineering Innovator Club, where every mission flies in Gazebo before it flies for real. I'm also one of five engineers building a boiler inspection crawler for <strong>Getabec</strong>, which we demonstrated at ProPak Asia 2026. In 2026 our EIC-Chula team placed 6th in the world at <strong>RoboCup@Home</strong>.</p>
+        <p>I started taking on real work before university: AI research at V89 Technology in 2024, then an MRI project with the Faculty of Medicine and a software developer role at AIMET that lasted almost two years. For two years I also taught C++, Python, data structures and AI fundamentals at Leagues of Code.</p>
+        <p>Off the clock I play bass guitar and sing, and play basketball, badminton and chess.</p>
+      </div>
+      <div>
+        <p class="eyebrow">At a glance</p>
+        <dl class="kv">
+          <div><dt>Based in</dt><dd>Bangkok, Thailand</dd></div>
+          <div><dt>Studying</dt><dd>B.Eng., Chula ISE (2025 – Present)</dd></div>
+          <div><dt>Leading</dt><dd>EIC-ARRT aerial robotics</dd></div>
+          <div><dt>Research</dt><dd>2 papers at NeurIPS 2026 workshops</dd></div>
+          <div><dt>Contact</dt><dd><a class="link" href={`mailto:${site.email}`}>{site.email}</a></dd></div>
+        </dl>
+        <p class="cta-row"><a class="btn btn-ghost" href={site.cv} download={site.cvFile}>Download CV <Icon name="download" /></a></p>
+      </div>
+    </div>
+
+    <section class="sec" id="experience">
+      <SectionHead title="Experience" />
+      <div class="cv">
+        {experience.map((r) => <CvRow role={r} />)}
+      </div>
+    </section>
+
+    <section class="sec" id="education">
+      <SectionHead title="Education" />
+      <div class="cv">
+        {education.map((r) => <CvRow role={r} />)}
+      </div>
+    </section>
+
+    <section class="sec" id="honours">
+      <SectionHead title="Honours" />
+      <Ledger items={honours.map((h) => ({ name: h.name, result: h.result, sub: h.long }))} />
+    </section>
+
+    <section class="sec" id="skills">
+      <SectionHead title="Skills" />
+      <div class="skills">
+        {skills.map((s) => (
+          <div class="skill">
+            <h3 class="skill-h">{s.title}</h3>
+            <p>{s.items}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  </div>
+
+  <Contact />
+</BaseLayout>

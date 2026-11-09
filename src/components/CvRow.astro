@@ -1,0 +1,22 @@
+---
+import type { Role } from '../data/experience';
+
+interface Props {
+  role: Role;
+}
+
+const { role } = Astro.props;
+---
+
+<div class="cv-row">
+  <span class="when">{role.current && <span class="pulse" aria-hidden="true"></span>}{role.when}</span>
+  <div>
+    <p class="cv-org">{role.org}</p>
+    <p class="cv-role">{role.role}</p>
+    {role.bullets && (
+      <ul class="bullets">
+        {role.bullets.map((b) => <li>{b}</li>)}
+      </ul>
+    )}
+  </div>
+</div>

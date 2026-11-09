@@ -1,0 +1,31 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <canvas class="sky-stars" aria-hidden="true"></canvas>
+  <div class="globe-wrap" aria-hidden="true"><canvas class="globe"></canvas></div>
+
+  <div class="wrap hero-inner">
+    <div class="hero-copy">
+      <p class="kicker hero-in" style="--d:0">Suphachat Sriharan<span class="sep">·</span>Chula ISE</p>
+      <h1 class="hero-title hero-in" id="hero-title" style="--d:1">Keeping it<br />down to <span class="script">Earth</span></h1>
+      <p class="hero-lede hero-in" style="--d:2">I'm an engineering student at Chulalongkorn University. I build robots, AI systems and software, and I'm happiest when a project makes it out of the lab and in front of people.</p>
+      <div class="hero-actions hero-in" style="--d:3">
+        <a class="btn btn-solid" href="/work">See my work <Icon name="arrow" /></a>
+        <a class="btn btn-ghost" href={site.cv} download={site.cvFile}>Download CV <Icon name="download" /></a>
+        <a class="btn btn-ghost" href={site.links.linkedin} target="_blank" rel="noopener">LinkedIn <Icon name="external" /></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap hero-foot hero-in" style="--d:5">
+    <span class="now"><span class="pulse" aria-hidden="true"></span>Now leading EIC-ARRT, Chula's aerial robotics team</span>
+    <span>13.7563° N · 100.5018° E · Bangkok</span>
+  </div>
+</section>
+
+<script>
+  import '../scripts/sky.js';
+</script>

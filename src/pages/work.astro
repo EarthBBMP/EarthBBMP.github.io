@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectEntry from '../components/ProjectEntry.astro';
+import { categories, groups, projects } from '../data/projects';
+---
+
+<BaseLayout
+  title="Work · Suphachat Sriharan"
+  description="Robots, AI systems and software by Suphachat Sriharan: aerial robotics, boiler inspection, RoboCup@Home, medical AI and more."
+  current="work"
+>
+  <div class="wrap page-head">
+    <h1 class="page-title">Work<span class="dot">.</span></h1>
+    <p class="page-lede">Robots, AI systems and software, newest first. Most of it was built with a team, so each entry says what my part was.</p>
+  </div>
+
+  <div class="wrap">
+    <div class="filters" data-filters role="group" aria-label="Filter by category">
+      <button class="tab" type="button" data-filter="all" aria-pressed="true">All <span class="n"></span></button>
+      {Object.entries(categories).map(([key, label]) => (
+        <button class="tab" type="button" data-filter={key} aria-pressed="false">{label} <span class="n"></span></button>
+      ))}
+    </div>
+
+    {groups.map((g) => (
+      <section class="year" aria-labelledby={g.id}>
+        <header class="year-head"><h2 id={g.id}>{g.label}</h2><span class="year-count"></span></header>
+        {projects.filter((p) => p.group === g.id).map((p) => <ProjectEntry project={p} />)}
+      </section>
+    ))}
+  </div>
+  <div class="page-end"></div>
+</BaseLayout>

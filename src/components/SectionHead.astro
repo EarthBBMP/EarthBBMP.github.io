@@ -1,0 +1,16 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  title: string;
+  href?: string;
+  link?: string;
+}
+
+const { title, href, link } = Astro.props;
+---
+
+<div class="sec-head">
+  <h2 class="sec-title">{title}</h2>
+  {href && <a class="sec-link" href={href}>{link} <Icon name="arrow" /></a>}
+</div>

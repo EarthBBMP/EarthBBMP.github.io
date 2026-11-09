@@ -1,0 +1,42 @@
+---
+import Icon from './Icon.astro';
+import type { Paper } from '../data/papers';
+
+interface Props {
+  paper: Paper;
+  full?: boolean;
+}
+
+const { paper: p, full = false } = Astro.props;
+---
+
+{full ? (
+  <article class="paper" id={p.id}>
+    <div>
+      <p class="venue"><span class="badge">Accepted</span>{' '}{p.venue}</p>
+      <h2 class="paper-title">{p.title}</h2>
+      <p class="paper-sum" set:html={p.summary} />
+      <details class="more">
+        <summary>Key findings</summary>
+        <ul class="bullets">
+          {p.findings.map((f) => <li>{f}</li>)}
+        </ul>
+      </details>
+      <p class="paper-links">
+        {p.links.map((l) =>
+          'note' in l ? (
+            <span class="note">{l.note}</span>
+          ) : (
+            <a class="link" href={l.href} target="_blank" rel="noopener">{l.label} <Icon name="external" /></a>
+          )
+        )}
+      </p>
+    </div>
+  </article>
+) : (
+  <article class="paper">
+    <p class="venue"><span class="badge">Accepted</span>{' '}{p.venue}</p>
+    <h3 class="paper-title">{p.title}</h3>
+    <p class="paper-sum" set:html={p.short} />
+  </article>
+)}

@@ -1,0 +1,45 @@
+---
+import Icon from './Icon.astro';
+import { categories, type Project } from '../data/projects';
+
+interface Props {
+  project: Project;
+}
+
+const { project: p } = Astro.props;
+---
+
+<article class="entry" id={p.id} data-cat={p.cat}>
+  <div class="entry-meta">
+    <span class={`cat cat-${p.cat}`}>{categories[p.cat]}</span>
+    {p.when && <span class="when">{p.when}</span>}
+    <span class="ctx">{p.context}</span>
+  </div>
+  <div class="entry-body">
+    <h3 class="entry-title">{p.title}</h3>
+    <p class="entry-sum">{p.summary}</p>
+    {p.details && (
+      <details class="more">
+        <summary>Details</summary>
+        <ul class="bullets">
+          {p.details.map((d) => <li>{d}</li>)}
+        </ul>
+      </details>
+    )}
+    <p class="entry-stack">{p.stack}</p>
+  </div>
+  <div class="entry-links">
+    {p.links?.map((l) =>
+      'group' in l ? (
+        <div class="lg">
+          <span class="lg-name">{l.group}</span>
+          {l.links.map((x) => <a class="link" href={x.href} target="_blank" rel="noopener">{x.label} <Icon name="external" /></a>)}
+        </div>
+      ) : 'note' in l ? (
+        <span class:list={['note', { nda: l.nda }]}>{l.note}</span>
+      ) : (
+        <a class="link" href={l.href} target="_blank" rel="noopener">{l.label} <Icon name="external" /></a>
+      )
+    )}
+  </div>
+</article>

@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostItem from '../components/PostItem.astro';
+import { posts } from '../data/posts';
+import { site } from '../data/site';
+---
+
+<BaseLayout
+  title="Writing · Suphachat Sriharan"
+  description="Writing by Suphachat Sriharan (Earth) on Medium, in Thai: how ZIP compression works, and more."
+  current="writing"
+>
+  <div class="wrap page-head">
+    <h1 class="page-title">Writing<span class="dot">.</span></h1>
+    <p class="page-lede">Things I've written up on <a class="link" href={site.links.medium} target="_blank" rel="noopener">Medium</a>, mostly in Thai.</p>
+  </div>
+
+  <div class="wrap">
+    <div class="posts">
+      {posts.map((p) => <PostItem post={p} full />)}
+    </div>
+  </div>
+  <div class="page-end"></div>
+</BaseLayout>

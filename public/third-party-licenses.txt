@@ -1,8 +1,8 @@
-Third-party code bundled in this folder
-=======================================
+Third-party code bundled into this site's JavaScript
+====================================================
 
 -----------------------------------------------------------------------
-d3-array.min.js  (from https://github.com/d3/d3-array, v3.2.4)
+d3-array  (https://github.com/d3/d3-array)
 -----------------------------------------------------------------------
 
 Copyright 2010-2023 Mike Bostock
@@ -21,7 +21,7 @@ THIS SOFTWARE.
 
 
 -----------------------------------------------------------------------
-d3-geo.min.js  (from https://github.com/d3/d3-geo, v3.1.1)
+d3-geo  (https://github.com/d3/d3-geo)
 -----------------------------------------------------------------------
 
 Copyright 2010-2024 Mike Bostock
@@ -61,7 +61,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 -----------------------------------------------------------------------
-topojson-client.min.js  (from https://github.com/topojson/topojson-client, v3.1.0)
+topojson-client  (https://github.com/topojson/topojson-client)
 -----------------------------------------------------------------------
 
 Copyright 2012-2019 Michael Bostock
@@ -80,8 +80,8 @@ THIS SOFTWARE.
 
 
 -----------------------------------------------------------------------
-world-110m.js  (from https://github.com/topojson/world-atlas, v2.0.2)
-countries-110m.json wrapped as a script; map data from Natural Earth (public domain).
+world-atlas  (https://github.com/topojson/world-atlas)
+Map data from Natural Earth (public domain).
 -----------------------------------------------------------------------
 
 Copyright 2013-2019 Michael Bostock
