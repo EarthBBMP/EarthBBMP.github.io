@@ -1,5 +1,4 @@
-/* Home hero: starfield + a draggable orthographic globe centred near Bangkok.
-   Colours come from CSS custom properties so both themes stay in sync. */
+// home hero: stars + draggable globe (colours come from CSS variables)
 (() => {
   const hero = document.querySelector('.hero');
   const starCanvas = hero?.querySelector('.sky-stars');
@@ -28,7 +27,7 @@
   let stars = [];
   let sw = 0, sh = 0;
 
-  // Seeded so the sky doesn't reshuffle on every resize.
+  // seeded so stars stay put on resize
   function rng(seed) {
     return () => {
       seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
@@ -75,7 +74,7 @@
   /* ---------- globe ---------- */
   const geoReady = !!(globeCanvas && window.d3?.geoOrthographic && window.topojson && window.WORLD_110M);
   const BKK = [100.5018, 13.7563];
-  const rot = { lam: -122, phi: -14, gam: -9 }; // opens on Southeast Asia, like the banner
+  const rot = { lam: -122, phi: -14, gam: -9 }; // start over Southeast Asia
   const TILT = -14 * Math.PI / 180;
   let gctx, proj, path, land, borders, graticule;
   let gw = 0, cx = 0, cy = 0, R = 0;
@@ -170,7 +169,7 @@
     disc(); gctx.stroke();
     gctx.restore();
 
-    // Bangkok, when it's on the visible side
+    // Bangkok marker
     if (d3.geoDistance(BKK, [-rot.lam, -rot.phi]) < Math.PI / 2 - 0.1) {
       const [x, y] = proj(BKK);
       const k = reduce.matches ? 0.4 : ((t / 1000) % 2.4) / 2.4;

@@ -1,8 +1,4 @@
-/* =========================================================
-   Suphachat Sriharan — site styles
-   Night (default) = the banner's deep-space navy.
-   Day = a paper star chart: warm paper, navy ink.
-   ========================================================= */
+/* night theme (default) */
 
 :root {
   --bg: #090D1B;
@@ -27,7 +23,7 @@
   --hero-tint: #0E1636;
   --hero-glow: rgba(37, 88, 190, .30);
 
-  /* read by js/sky.js */
+  /* used by sky.js */
   --star: 226, 234, 255;
   --star-alpha: .85;
   --globe-ocean: #08193D;
@@ -40,7 +36,7 @@
   --globe-shade: rgba(2, 6, 20, .55);
   --globe-orbit: rgba(170, 200, 255, .24);
 
-  /* Thai falls through to Prompt / IBM Plex Sans Thai glyph by glyph */
+  /* Thai fallback fonts */
   --font-display: "Poppins", "Prompt", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-body: "Figtree", "IBM Plex Sans Thai", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Code", monospace;
@@ -56,6 +52,7 @@
   color-scheme: dark;
 }
 
+/* day theme */
 [data-theme="light"] {
   --bg: #F5F3EC;
   --bg-2: #EFECE3;
@@ -284,7 +281,7 @@ strong { font-weight: 600; }
 .globe { width: 100%; height: 100%; cursor: grab; touch-action: pan-y; }
 .globe.dragging { cursor: grabbing; }
 
-/* nudged above true centre: the eye reads the middle a little high */
+/* sit a bit above centre */
 .hero-inner { position: relative; z-index: 1; margin-block: auto; pointer-events: none; transform: translateY(calc(-1 * clamp(.75rem, 3vh, 2rem))); }
 .hero-copy { max-width: 40rem; pointer-events: auto; }
 .kicker {
@@ -404,7 +401,7 @@ strong { font-weight: 600; }
 .xp-role { color: var(--text-2); font-size: .92rem; }
 @media (max-width: 640px) { .xp li { grid-template-columns: 1fr; gap: .25rem; } }
 
-/* selected work: editorial rows, no boxes */
+/* selected work */
 .showcase { border-top: 1px solid var(--border); }
 .show {
   display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 1rem 3.5rem;
@@ -462,7 +459,7 @@ strong { font-weight: 600; }
   .papers.duo .paper + .paper { border-left: 0; border-top: 1px solid var(--border); padding-left: 0; }
 }
 
-/* honours: a ledger with dotted leaders */
+/* honours */
 .ledger { border-top: 1px solid var(--border); padding-top: .6rem; }
 .ledger li { display: grid; grid-template-columns: auto minmax(1.5rem, 1fr) auto; align-items: baseline; column-gap: .9rem; padding: 1rem 0; }
 .l-name, .l-val { font-family: var(--font-display); font-size: clamp(1.05rem, 1rem + .45vw, 1.3rem); letter-spacing: -.015em; }
@@ -506,7 +503,7 @@ strong { font-weight: 600; }
 .page-title .dot { color: var(--accent); }
 .page-lede { max-width: 40rem; font-size: 1.06rem; line-height: 1.65; color: var(--text-2); }
 
-/* work: filters (plain text tabs, counts on the same baseline) */
+/* work: filters */
 .filters { display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem 1.75rem; padding-bottom: .5rem; }
 .tab {
   position: relative; padding: .3rem 0;

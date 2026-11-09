@@ -1,10 +1,9 @@
-/* Site behaviour: theme, nav, reveal-on-scroll, work filters. */
+// theme, nav, scroll reveal, work filters
 (() => {
   const root = document.documentElement;
 
-  /* GitHub Pages serves /work from work.html, so links leave off ".html".
-     Opened straight from disk (file://) that doesn't work, so put it back. */
-  if (location.protocol === 'file:') {
+  // add .html back to links when running locally
+  if (location.protocol === 'file:' || ['localhost', '127.0.0.1'].includes(location.hostname)) {
     document.querySelectorAll('a[href]').forEach((a) => {
       const h = a.getAttribute('href');
       if (h === './') a.setAttribute('href', 'index.html');
@@ -42,7 +41,7 @@
     applyTheme(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark', true);
   });
 
-  // Follow the OS setting until the visitor picks a theme themselves.
+  // follow the OS theme until the user picks one
   matchMedia('(prefers-color-scheme: light)').addEventListener?.('change', (e) => {
     if (!saved()) applyTheme(e.matches ? 'light' : 'dark', false);
   });
@@ -116,7 +115,7 @@
     apply('all');
   }
 
-  /* Deep links like work.html#robocup open that entry's details. */
+  // open an entry's details when linked with #id
   function openTarget() {
     if (!location.hash) return;
     const el = document.getElementById(decodeURIComponent(location.hash.slice(1)));
