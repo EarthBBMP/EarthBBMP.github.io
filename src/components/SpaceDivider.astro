@@ -26,8 +26,8 @@ type Pt = [number, number];
 
 // waypoints from off-screen to the craft
 const amp = { rocket: 42, comet: 26, satellite: 18 }[kind];
-const reach = { rocket: [950, 1010], satellite: [1000, 1050], comet: [1020, 1070] }[kind];
-const end: Pt = [R(reach[0], reach[1]), R(44, 116)];
+const reach = { rocket: [980, 1040], satellite: [1000, 1050], comet: [1020, 1070] }[kind];
+const end: Pt = [R(reach[0], reach[1]), kind === 'rocket' ? R(40, 72) : R(44, 116)];
 const START = -800;
 const startY = R(30, 130);
 const n = 4 + Math.floor(rand() * 3);
@@ -37,6 +37,12 @@ for (let i = 0; i <= n; i++) {
   const x = START + f * (end[0] - START) + (i > 0 && i < n ? R(-50, 50) : 0);
   const y = i === 0 ? startY : i === n ? end[1] : clamp(startY + (end[1] - startY) * f + R(-amp, amp), 30, 130);
   pts.push([x, y]);
+}
+
+// rockets climb into place so they never point down at the text
+if (kind === 'rocket') {
+  const prev = pts[n - 1];
+  prev[1] = clamp(end[1] + Math.tan((R(8, 12) * Math.PI) / 180) * (end[0] - prev[0]), 30, 134);
 }
 
 // smooth curve through the waypoints (Catmull-Rom as cubic Béziers)
@@ -76,8 +82,8 @@ if (kind === 'rocket') {
     const f = back / total;
     const [x, y] = pointAt(total - back);
     if (x < -560) break;
-    const r = 2.5 + 15 * Math.pow(f, 0.7);
-    puffs.push({ x: x + R(-0.3, 0.3) * r, y: y + R(-0.35, 0.35) * r, r: r * R(0.8, 1.15), o: 0.05 + 0.5 * Math.pow(1 - f, 1.4), delay: 1.35 * (1 - f) });
+    const r = 2 + 12 * Math.pow(f, 0.7);
+    puffs.push({ x: x + R(-0.3, 0.3) * r, y: y + R(-0.35, 0.35) * r, r: r * R(0.8, 1.15), o: 0.04 + 0.42 * Math.pow(1 - f, 1.4), delay: 1.35 * (1 - f) });
     back += 5 + 13 * f;
   }
 }
@@ -125,7 +131,7 @@ const sparkles = Array.from({ length: 5 }, () => [R(20, W - 20), R(16, H - 16), 
           ))}
         </g>
         <g class="craft">
-          <g transform={`translate(${f1(end[0])} ${f1(end[1])}) rotate(${angle.toFixed(1)})`}>
+          <g transform={`translate(${f1(end[0])} ${f1(end[1])}) rotate(${angle.toFixed(1)}) scale(.72)`}>
             <g class="bob">
               <path class="flame" d="M2 0 L-18 -6 L-11 0 L-18 6 Z"></path>
               <path class="flame-in" d="M2 0 L-10 -3 L-6 0 L-10 3 Z"></path>
