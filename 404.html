@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lost in orbit · Suphachat Sriharan</title>
+  <meta name="theme-color" content="#090D1B">
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Courgette&family=Figtree:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Poppins:wght@500;600&family=Prompt:wght@500;600&display=swap">
+
+  <style>html{background:#090D1B}html[data-theme=light]{background:#F5F3EC}</style>
+  <script>
+    (function () {
+      var d = document.documentElement, t = null;
+      d.classList.add('js');
+      try { t = localStorage.getItem('theme'); } catch (e) {}
+      if (!t) t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      d.setAttribute('data-theme', t);
+    })();
+  </script>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="/index.html" aria-label="Suphachat Sriharan, home">
+        <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5.5"/><ellipse cx="12" cy="12" rx="10.5" ry="3.4" transform="rotate(-18 12 12)"/></svg>
+        <span>Suphachat</span>
+      </a>
+      <nav class="nav-links" id="nav-links" aria-label="Main">
+        <a href="/work.html">Work</a>
+        <a href="/research.html">Research</a>
+        <a href="/writing.html">Writing</a>
+        <a href="/about.html" >About</a>
+      </nav>
+      <button class="theme-toggle" type="button"><span class="tt-icon" aria-hidden="true"></span><span class="tt-label">Night</span></button>
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu"><span></span><span></span></button>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="lost">
+      <p class="eyebrow">Error 404</p>
+      <h1 class="page-title">Lost in <span class="script">orbit</span></h1>
+      <p class="page-lede">This page drifted off somewhere. The rest of the site is still on the ground.</p>
+      <p><a class="btn btn-solid" href="/index.html">Back to Earth <svg class="i" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg></a></p>
+    </section>
+  </main>
+  <script src="/js/main.js"></script>
+</body>
+</html>

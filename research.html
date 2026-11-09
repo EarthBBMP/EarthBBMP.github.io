@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Research · Suphachat Sriharan</title>
+  <meta name="description" content="Research by Suphachat Sriharan: temporal anchoring of LLMs on amended Thai law, and an audit of a sequence-to-expression genomics model. NeurIPS 2026 workshops.">
+  <meta name="theme-color" content="#090D1B">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Research · Suphachat Sriharan">
+  <meta property="og:image" content="https://earthbbmp.github.io/assets/img/banner.png">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Courgette&family=Figtree:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Poppins:wght@500;600&family=Prompt:wght@500;600&display=swap">
+
+  <style>html{background:#090D1B}html[data-theme=light]{background:#F5F3EC}</style>
+  <script>
+    (function () {
+      var d = document.documentElement, t = null;
+      d.classList.add('js');
+      try { t = localStorage.getItem('theme'); } catch (e) {}
+      if (!t) t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      d.setAttribute('data-theme', t);
+    })();
+  </script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav" id="nav">
+    <div class="wrap nav-inner">
+      <a class="brand" href="index.html" aria-label="Suphachat Sriharan, home">
+        <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5.5"/><ellipse cx="12" cy="12" rx="10.5" ry="3.4" transform="rotate(-18 12 12)"/></svg>
+        <span>Suphachat</span>
+      </a>
+      <nav class="nav-links" id="nav-links" aria-label="Main">
+        <a href="work.html">Work</a>
+        <a href="research.html" aria-current="page">Research</a>
+        <a href="writing.html">Writing</a>
+        <a href="about.html">About</a>
+      </nav>
+      <button class="theme-toggle" type="button"><span class="tt-icon" aria-hidden="true"></span><span class="tt-label">Night</span></button>
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu"><span></span><span></span></button>
+    </div>
+  </header>
+
+  <main id="main">
+    <div class="wrap page-head">
+      <h1 class="page-title">Research<span class="dot">.</span></h1>
+      <p class="page-lede">Most of my research asks the same question: does the model actually know what it seems to know? So far that has meant LLMs answering questions about amended Thai law, and a genomics model that barely reads its own input.</p>
+    </div>
+
+    <div class="wrap">
+      <div class="papers">
+        <article class="paper" id="old-law">
+          <div>
+            <p class="venue"><span class="badge">Accepted</span> NeurIPS 2026, New in ML and Global South AI workshops</p>
+            <h2 class="paper-title">Still Citing the Old Law? Statutory Knowledge and Temporal Anchoring in Thai Legal Question Answering</h2>
+            <p class="paper-sum">When a law is amended, does an LLM answer with the current version or the repealed one, and can you tell the difference between that and simply not knowing? We built a benchmark to separate the two. Across nine LLMs, <strong class="hl">97.7%</strong> of the wrong answers came with no sign of uncertainty.</p>
+            <details class="more">
+              <summary>Key findings</summary>
+              <ul class="bullets">
+                <li>A bilingual Thai/English benchmark of 60 vignettes on four dated amendments to Thai law, with every gold label traceable to the Royal Gazette.</li>
+                <li>Nine LLMs evaluated over 3,036 responses, separating anchoring to repealed law from lack of knowledge.</li>
+                <li>97.7% of the wrong answers came with no expression of uncertainty.</li>
+              </ul>
+            </details>
+            <p class="paper-links">
+              <a class="link" href="https://github.com/EarthBBMP/thai-legal-temporal-grounding" target="_blank" rel="noopener">Code <svg class="i" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 11l6-6M6 5h5v5"/></svg></a>
+              <span class="note">Paper coming soon</span>
+            </p>
+          </div>
+        </article>
+
+        <article class="paper" id="any-promoter">
+          <div>
+            <p class="venue"><span class="badge">Accepted</span> NeurIPS 2026, New in ML and ICBINB workshops</p>
+            <h2 class="paper-title">Any Promoter Will Do: Auditing a Sequence-to-Expression Model on Patient-Derived Data</h2>
+            <p class="paper-sum">A released convolutional model claims to predict mRNA abundance from promoter sequence. We ran it on patient exome data and added the baselines and ablations it was missing, to check how much it really uses the sequence. Barely: swapping, shuffling or scrambling the promoter changes R² by <strong class="hl">under 0.010</strong>.</p>
+            <details class="more">
+              <summary>Key findings</summary>
+              <ul class="bullets">
+                <li>Audited on patient exome data covering 15,370 genes.</li>
+                <li>Added the missing baselines and ablations.</li>
+                <li>Swapping, shuffling or scrambling the promoter changes R² by under 0.010: the model barely uses the sequence it is given.</li>
+              </ul>
+            </details>
+            <p class="paper-links">
+              <span class="note">Paper coming soon</span>
+              <span class="note">Code coming soon</span>
+            </p>
+          </div>
+        </article>
+      </div>
+
+      <section class="sec flush">
+        <div class="sec-head"><h2 class="sec-title">Other research work</h2></div>
+        <div class="others">
+          <a href="work.html#liver">
+            <span class="t">Predicting liver cancer recurrence from MRI</span>
+            <span class="m">Faculty of Medicine, Chula · 2025</span>
+          </a>
+          <a href="work.html#aspine">
+            <span class="t">ASPINE: predicting neoantigen expression in breast cancer</span>
+            <span class="m">iGEM 2024 · Silver medal</span>
+          </a>
+          <a href="work.html#v89">
+            <span class="t">Segmenting and summarising long-form video</span>
+            <span class="m">V89 Technology · 2024</span>
+          </a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer-inner">
+      <p class="footer-copy">© <span data-year>2026</span> Suphachat Sriharan · Bangkok</p>
+      <nav class="footer-links" aria-label="Elsewhere">
+        <a href="mailto:suphachat.sriharan@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/suphachat" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/EarthBBMP" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://medium.com/@theearthbbmp" target="_blank" rel="noopener">Medium</a>
+        <a href="assets/Suphachat_Sriharan_CV.pdf" download="Suphachat_Sriharan_CV.pdf">CV</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
