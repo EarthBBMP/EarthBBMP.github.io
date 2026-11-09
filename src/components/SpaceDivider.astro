@@ -4,12 +4,12 @@ interface Props {
   kind: 'rocket' | 'comet' | 'satellite';
   seed: number;
   flip?: boolean;
-  loop?: boolean;
 }
 
-const { kind, seed, flip = false, loop = false } = Astro.props;
+const { kind, seed, flip = false } = Astro.props;
 const uid = `${kind}-${seed}`;
-const W = 1600;
+// viewBox matches the text column; the trail starts far off the left edge
+const W = 1120;
 const H = 160;
 
 // seeded random so the same divider looks the same on every build
@@ -26,24 +26,17 @@ type Pt = [number, number];
 
 // waypoints from off-screen to the craft
 const amp = { rocket: 42, comet: 26, satellite: 18 }[kind];
-const end: Pt = [R(860, 1060), R(44, 116)]; // stays visible when phones crop the sides
+const reach = { rocket: [950, 1010], satellite: [1000, 1050], comet: [1020, 1070] }[kind];
+const end: Pt = [R(reach[0], reach[1]), R(44, 116)];
+const START = -800;
 const startY = R(30, 130);
 const n = 4 + Math.floor(rand() * 3);
 let pts: Pt[] = [];
 for (let i = 0; i <= n; i++) {
   const f = i / n;
-  const x = -80 + f * (end[0] + 80) + (i > 0 && i < n ? R(-40, 40) : 0);
+  const x = START + f * (end[0] - START) + (i > 0 && i < n ? R(-50, 50) : 0);
   const y = i === 0 ? startY : i === n ? end[1] : clamp(startY + (end[1] - startY) * f + R(-amp, amp), 30, 130);
   pts.push([x, y]);
-}
-
-// optional loop-de-loop near the end
-if (loop) {
-  const k = n - 1;
-  const [x, y0] = pts[k];
-  const y = clamp(y0, 82, 130);
-  const r = 26;
-  pts = [...pts.slice(0, k), [x - r * 0.4, y], [x + r, y - r], [x, y - 2 * r], [x - r, y - r], [x + r * 0.4, y], ...pts.slice(k + 1)];
 }
 
 // smooth curve through the waypoints (Catmull-Rom as cubic Béziers)
@@ -82,6 +75,7 @@ if (kind === 'rocket') {
   while (back < total) {
     const f = back / total;
     const [x, y] = pointAt(total - back);
+    if (x < -560) break;
     const r = 2.5 + 15 * Math.pow(f, 0.7);
     puffs.push({ x: x + R(-0.3, 0.3) * r, y: y + R(-0.35, 0.35) * r, r: r * R(0.8, 1.15), o: 0.05 + 0.5 * Math.pow(1 - f, 1.4), delay: 1.35 * (1 - f) });
     back += 5 + 13 * f;
@@ -96,13 +90,13 @@ const dust = kind === 'comet'
     })
   : [];
 
-const sparkles = Array.from({ length: 5 }, () => [R(40, W - 40), R(16, H - 16), R(0.55, 1.05)]);
+const sparkles = Array.from({ length: 5 }, () => [R(20, W - 20), R(16, H - 16), R(0.55, 1.05)]);
 ---
 
-<div class:list={['flight', 'reveal', `flight-${kind}`, { flip }]} aria-hidden="true">
-  <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice">
+<div class:list={['flight', 'wrap', 'reveal', `flight-${kind}`, { flip }]} aria-hidden="true">
+  <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMaxYMid slice">
     <defs>
-      <linearGradient id={`trail-${uid}`} gradientUnits="userSpaceOnUse" x1="0" y1="0" x2={f1(end[0])} y2="0">
+      <linearGradient id={`trail-${uid}`} gradientUnits="userSpaceOnUse" x1="-160" y1="0" x2={f1(end[0])} y2="0">
         <stop offset="0" style="stop-color: var(--trail); stop-opacity: 0"></stop>
         <stop offset="1" style="stop-color: var(--trail)"></stop>
       </linearGradient>
