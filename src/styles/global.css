@@ -10,7 +10,7 @@
   --border-hover: rgba(160, 185, 255, .28);
   --text-1: #EDF0F7;
   --text-2: #A7AFC6;
-  --text-3: #858EA8;
+  --text-3: #8892AC;
   --accent: #7CC8FF;
   --on-accent: #06142B;
 
@@ -24,8 +24,8 @@
   --hero-glow: rgba(37, 88, 190, .30);
   /* page background, top to bottom */
   --page-fade:
-    radial-gradient(1100px 320px at 50% 100%, rgba(255, 150, 90, .10), transparent 70%),
-    linear-gradient(180deg, #090D1B 0%, #0A1122 14%, #0B1730 32%, #111A3D 52%, #181942 72%, #1F1940 88%, #231838 100%);
+    radial-gradient(1100px 300px at 50% 100%, rgba(170, 215, 255, .045), transparent 70%),
+    linear-gradient(180deg, #090D1B 0%, #0A1224 16%, #0B1931 36%, #0D1F3A 58%, #0E213D 80%, #0F223D 100%);
 
   /* used by sky.js */
   --star: 226, 234, 255;
@@ -80,8 +80,8 @@
   --hero-tint: #EFEEE8;
   --hero-glow: rgba(29, 95, 175, .07);
   --page-fade:
-    radial-gradient(1100px 320px at 50% 100%, rgba(240, 160, 100, .14), transparent 70%),
-    linear-gradient(180deg, #F5F3EC 0%, #F1F3F2 14%, #ECF1F6 34%, #ECEEF8 56%, #F1ECF5 76%, #F6ECEC 90%, #F7EEE4 100%);
+    radial-gradient(1100px 320px at 50% 100%, rgba(255, 255, 255, .7), transparent 70%),
+    linear-gradient(180deg, #F5F5F1 0%, #F0F4F7 14%, #E8F0F9 36%, #E2EDF9 60%, #E6F0FA 82%, #EEF5FC 100%);
 
   --star: 17, 23, 51;
   --star-alpha: .38;
