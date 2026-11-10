@@ -1,7 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ProjectEntry from '../components/ProjectEntry.astro';
+import Icon from '../components/Icon.astro';
 import { categories, groups, projects } from '../data/projects';
+import { site } from '../data/site';
 ---
 
 <BaseLayout
@@ -12,6 +14,7 @@ import { categories, groups, projects } from '../data/projects';
   <div class="wrap page-head">
     <h1 class="page-title">Work<span class="dot">.</span></h1>
     <p class="page-lede">Robots, AI systems and software, newest first. Most of it was built with a team, so each entry says what my part was.</p>
+    <p class="page-note"><Icon name="lock" /><span>Most of my work is for companies and research labs and is under NDA, so my <a class="link" href={site.links.github} target="_blank" rel="noopener">GitHub</a> is pretty quiet. What I can share is below.</span></p>
   </div>
 
   <div class="wrap">

@@ -587,6 +587,8 @@ strong { font-weight: 600; }
 }
 .page-title .dot { color: var(--accent); }
 .page-lede { max-width: 40rem; font-size: 1.06rem; line-height: 1.65; color: var(--text-2); }
+.page-note { display: flex; gap: .6rem; max-width: 40rem; margin-top: 1rem; font-size: .93rem; line-height: 1.6; color: var(--text-3); }
+.page-note .i { margin-top: .3em; color: var(--accent); }
 
 /* work: filters */
 .filters { display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem 1.75rem; padding-bottom: .5rem; }
