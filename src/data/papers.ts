@@ -2,6 +2,7 @@ export interface Paper {
   id: string;
   title: string;
   venue: string;
+  authors?: string[];
   // may contain html
   short: string;
   summary: string;
@@ -14,6 +15,7 @@ export const papers: Paper[] = [
     id: 'old-law',
     title: 'Still Citing the Old Law? Statutory Knowledge and Temporal Anchoring in Thai Legal Question Answering',
     venue: 'NeurIPS 2026, New in ML and Global South AI workshops',
+    authors: ['Suphachat Sriharan', 'Chotika Wangbenjasukee'],
     short: 'A bilingual Thai/English benchmark on four dated amendments to Thai law, used to test whether nine LLMs answer with the current law or the repealed one. <strong class="hl">97.7%</strong> of the wrong answers came with no sign of uncertainty.',
     summary: 'When a law is amended, does an LLM answer with the current version or the repealed one, and can you tell the difference between that and simply not knowing? We built a benchmark to separate the two. Across nine LLMs, <strong class="hl">97.7%</strong> of the wrong answers came with no sign of uncertainty.',
     findings: [
@@ -22,8 +24,9 @@ export const papers: Paper[] = [
       '97.7% of the wrong answers came with no expression of uncertainty.',
     ],
     links: [
+      { label: 'Paper (PDF)', href: '/assets/papers/still-citing-the-old-law.pdf' },
       { label: 'Code', href: 'https://github.com/EarthBBMP/thai-legal-temporal-grounding' },
-      { note: 'Paper coming soon' },
+      { note: 'arXiv coming soon' },
     ],
   },
   {

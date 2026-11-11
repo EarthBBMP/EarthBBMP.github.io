@@ -1,6 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import type { Paper } from '../data/papers';
+import { site } from '../data/site';
 
 interface Props {
   paper: Paper;
@@ -15,6 +16,13 @@ const { paper: p, full = false } = Astro.props;
     <div>
       <p class="venue"><span class="badge">Accepted</span>{' '}{p.venue}</p>
       <h2 class="paper-title">{p.title}</h2>
+      {p.authors && (
+        <p class="paper-authors">
+          {p.authors.map((a, i) => (
+            <>{i > 0 && ', '}{a === site.name ? <strong>{a}</strong> : a}</>
+          ))}
+        </p>
+      )}
       <p class="paper-sum" set:html={p.summary} />
       <details class="more">
         <summary>Key findings</summary>
